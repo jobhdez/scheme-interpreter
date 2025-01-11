@@ -33,25 +33,35 @@ class Application:
 
 class Var:
     "ATOM node."
-    __match_args__ = ('e')
-    def __init__(self, e):
-        self.e = e
+    __match_args__ = ('var',)
+    def __init__(self, var):
+        self.var= var
 
     def __repr__(self):
-        return f'(Var {self.e})'
+        return f'(Var {self.var})'
 
 class Op:
     "ATOM node."
-    __match_args__ = ('op')
+    __match_args__ = ('op',)
     def __init__(self, op):
         self.op = op
 
     def __repr__(self):
         return f'(Op {self.op})'
 
+class Bool:
+    "ATOM node."
+    __match_args__ = ('b',)
+    __match_args__ = ('b')
+    def __init__(self, b):
+        self.b = b
+
+    def __repr__(self):
+        return f'(Bool {self.b})'
+
 class Int:
     "INT node."
-    __match_args__ = ('num')
+    __match_args__ = ('num',)
     def __init__(self, num):
         self.num = num
 
@@ -98,11 +108,11 @@ class Define:
     "LET node."
     __match_args__ = ('var', 'exp')
     def __init__(self, var, exp):
-        self.var= var
-        self.body = exp
+        self.var = var
+        self.exp = exp
 
     def __repr__(self):
-        return f'(Let (Binding {self.var}) (Body {self.exp}))'
+        return f'(Define (Binding {self.var}) (Body {self.exp}))'
 
 class Lambda:
     "LET node."
@@ -112,7 +122,7 @@ class Lambda:
         self.body = body
 
     def __repr__(self):
-        return f'(Let (Binding {self.params}) (Body {self.body}))'
+        return f'(lambda ({self.params}) (Body {self.body}))'
 
 class Prim:
     __match_args__ = ('op', 'e', 'e2')
@@ -279,19 +289,19 @@ def p_begin(p):
 
 def p_lambda(p):
     '''
-    LambdaExp : LPAREN LAMBDA params expression RPAREN
+    LambdaExp : LPAREN LAMBDA LPAREN params RPAREN expression RPAREN
     '''
-    p[0] = Lambda(p[3], p[4])
+    p[0] = Lambda(p[4], p[6])
 
 def p_params(p):
     '''
     params : Var params
            | Var 
     '''
-    if len(p) == 2:
+    if len(p) == 3:
         params = list()
         if isinstance(p[2], list):
-            p[0] = p[1] + p[2]
+            p[0] = [p[1]] + p[2]
         else:
             params.append(p[1])
             params.append(p[2])
