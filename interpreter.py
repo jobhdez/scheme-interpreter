@@ -17,7 +17,7 @@ from parser import (
 
 import operator as op
 
-# `Env` and `Procedure were taken from Peter Norvig's Scheme interpreter
+# `Env` and `Procedure` and `standard_env` were taken from Peter Norvig's Scheme interpreter
 class Env(dict):
     def __init__(self, params=(), args=(), outer=None):
         self.update(zip(params, args))
